@@ -30,36 +30,6 @@ class UserController {
       email,
     });
   }
-
-  async editar(req, res) {
-    // validar campos com yup -- issue
-
-    const { email, oldPassword } = req.body;
-
-    // getbean || userId vem do middleware pelo token
-    const user = await User.findByPk(req.userId);
-
-    // check pra nao editar o email com um email ja existente
-    if (email !== user.email) {
-      const existeUser = await User.findOne({ where: { email } });
-
-      if (existeUser) {
-        return res.status(400).json({ error: 'Usuario ja existe no sistema' });
-      }
-    }
-
-    if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      return res.status(400).json({ error: 'Senha errada' });
-    }
-
-    const { id, name } = await User.update(req.body);
-
-    return res.json({
-      id,
-      name,
-      email,
-    });
-  }
 }
 
 export default new UserController();
