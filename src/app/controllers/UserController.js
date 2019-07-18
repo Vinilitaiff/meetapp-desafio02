@@ -4,17 +4,17 @@ import User from '../models/User';
 class UserController {
   async cadastrar(req, res) {
     // verificacao de dados
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      email: Yup.string()
-        .required()
-        .email(),
-      password: Yup.required(),
-    });
+    // const schema = Yup.object().shape({
+    //   name: Yup.string().required(),
+    //   email: Yup.string()
+    //     .required()
+    //     .email(),
+    //   password: Yup.required(),
+    // });
 
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Campos Invalidos' });
-    }
+    // if (!(await schema.isValid(req.body))) {
+    //  return res.status(400).json({ error: 'Campos Invalidos' });
+    // }
 
     const existeUser = await User.findOne({ where: { email: req.body.email } });
 
