@@ -36,6 +36,27 @@ class UserController {
   }
 
   async editar(req, res) {
+    const schema = yup.object().shape({
+      name: yup.string(),
+      email: yup.string().email(),
+      oldPassword: yup.string().min(6),
+      password: yup
+        .string()
+        .min(6)
+        .when('oldPassword', (oldPassword, field) =>
+          oldPassword ? field.required() : field
+        ),
+      confirmPassword: yup
+        .string()
+        .when('password', (password, field) =>
+          password ? field.required().oneOf([yup.ref('password')]) : field
+        ),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Falha na validacao' });
+    }
+
     // console.log(req.userId);
     const { email, oldPassword } = req.body;
     const user = await User.findByPk(req.userId);
@@ -55,7 +76,9 @@ class UserController {
       return res.status(400).json({ error: 'Senha incorreta' });
     }
 
-    return res.json(user);
+    const { id, name } = await user.update(req.body);
+
+    return res.json({ id, name, email });
   }
 }
 
