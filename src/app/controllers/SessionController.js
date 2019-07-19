@@ -17,7 +17,7 @@ class SessionController {
       return res.status(400).json({ error: 'Senha errada' });
     }
 
-    const { id, name } = req.body;
+    const { id, name } = user;
 
     return res.json({
       user: { id, name, email },
