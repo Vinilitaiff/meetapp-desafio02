@@ -4,6 +4,7 @@ import multerConfig from './config/multer';
 
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
+import FileController from './app/controllers/FileController';
 
 import authMiddleware from './app/middleware/auth';
 
@@ -21,9 +22,7 @@ routes.put('/users', UserController.editar);
 routes.post(
   '/files',
   upload.single('file'), // middleware upload um arquivo por vez e nome do campo da req
-  (req, res) => {
-    return res.json({ ok: 'upload' });
-  }
+  FileController.incluir
 );
 
 export default routes;
