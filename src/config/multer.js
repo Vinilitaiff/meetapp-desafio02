@@ -20,7 +20,7 @@ export default {
     fileSize: 2 * 1024 * 1024,
   },
   fileFilter: (req, file, callback) => {
-    const allowedMimes = ['image/jpeg', 'image/pjpeg', 'image/png'];
+    const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png'];
 
     if (allowedMimes.includes(file.mimetype)) {
       callback(null, true);

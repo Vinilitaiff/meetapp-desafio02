@@ -10,11 +10,11 @@ class MeetupController {
     const page = req.query.page > 0 ? req.query.page : 1;
     const where = {};
 
-    if (req.query.date) {
-      const searchDate = parseISO(req.query.date);
+    if (req.query.data) {
+      const searchData = parseISO(req.query.data);
 
-      where.date = {
-        [Op.between]: [startOfDay(searchDate), endOfDay(searchDate)],
+      where.data = {
+        [Op.between]: [startOfDay(searchData), endOfDay(searchData)],
       };
     }
 
@@ -26,7 +26,7 @@ class MeetupController {
       include: [
         {
           model: File,
-          attributes: ['id', 'path'],
+          attributes: ['id', 'path', 'url'],
         },
         {
           model: User,
@@ -100,6 +100,26 @@ class MeetupController {
     await meetup.update(req.body);
 
     return res.json(meetup);
+  }
+
+  async delete(req, res) {
+    const meetup = await Meetup.findByPk(req.params.id);
+
+    if (meetup.user_id !== req.userId) {
+      return res.status(400).json({
+        error: 'Não é organizador desse Meetup.',
+      });
+    }
+
+    if (meetup.past) {
+      return res.status(400).json({
+        error: 'Não é possível remover meetups passados.',
+      });
+    }
+
+    await meetup.destroy();
+
+    return res.send();
   }
 }
 
