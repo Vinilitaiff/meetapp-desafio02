@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import Subscription from '../models/Subscription';
 import User from '../models/User';
 import Meetup from '../models/Meetup';
@@ -6,6 +7,29 @@ import SubscriptionMail from '../jobs/SubscriptionMail';
 import Queue from '../../lib/Queue';
 
 class SubscriptionsController {
+  async listar(req, res) {
+    // Liste apenas meetups que ainda não passaram e ordene meetups mais próximos como primeiros da lista.
+    const subscription = await Meetup.findAll({
+      where: {
+        user_id: req.userId,
+      },
+      include: [
+        {
+          model: Meetup,
+          where: {
+            date: {
+              // > data atual
+              [Op.gt]: new Date(),
+            },
+          },
+          required: true,
+        },
+      ],
+      order: [[Meetup, 'date']],
+    });
+    return res.json(subscription);
+  }
+
   async incluir(req, res) {
     const user = await User.findByPk(req.userId);
     // param = meetupId
@@ -35,7 +59,7 @@ class SubscriptionsController {
           model: Meetup,
           required: true,
           // O usuário não pode se increver em dois meetups que acontecem no mesmo horário.
-          where: { date: meetup.data },
+          where: { data: meetup.data },
         },
       ],
     });
@@ -46,8 +70,8 @@ class SubscriptionsController {
     }
 
     const subscription = await Subscription.create({
-      meetup,
-      user,
+      meetup_id: meetup.id,
+      user_id: user.id,
     });
 
     await Queue.add(SubscriptionMail.key, {

@@ -25,6 +25,7 @@ class App {
   middlewares() {
     // para receber req em formato de json
     this.server.use(express.json());
+    this.server.use(express.urlencoded({ extended: false }));
     // servir arquivos estaticos
     this.server.use(
       '/files',

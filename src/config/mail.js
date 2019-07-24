@@ -3,8 +3,8 @@ export default {
   port: '2525',
   secure: false,
   auth: {
-    user: '37661e01276918',
-    pass: '2536abdb22f6fe',
+    user: 'b77c679300d551',
+    pass: 'a5fdfcdb47fc66',
   },
   default: {
     from: 'Equipe Meetapp <noreply@meetapp.com>',

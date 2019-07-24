@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "queue": "nodemon src/queue.js"
   },
   "dependencies": {
     "@sentry/node": "5.4.3",
